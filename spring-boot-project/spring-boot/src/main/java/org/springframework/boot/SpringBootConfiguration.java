@@ -43,6 +43,7 @@ import org.springframework.core.annotation.AliasFor;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
+//Spring提供的注解标志位配置类
 @Configuration
 public @interface SpringBootConfiguration {
 

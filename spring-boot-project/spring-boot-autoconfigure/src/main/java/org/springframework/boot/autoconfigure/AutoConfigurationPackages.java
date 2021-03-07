@@ -90,16 +90,22 @@ public abstract class AutoConfigurationPackages {
 	 * @param packageNames the package names to set
 	 */
 	public static void register(BeanDefinitionRegistry registry, String... packageNames) {
+		//这里的参数packageNames缺省情况下就是一个字符串是使用了注解@SpringBootApplication的SpringBoot应用程序入口类所在包
+
+		//判断AutoConfigurationPackages这个bean有没有被注册
 		if (registry.containsBeanDefinition(BEAN)) {
+			//判断AutoConfigurationPackages这个bean已经被注册了就将该bean也就是AutoConfigurationPackages,包名添加进去
 			BeanDefinition beanDefinition = registry.getBeanDefinition(BEAN);
 			ConstructorArgumentValues constructorArguments = beanDefinition.getConstructorArgumentValues();
 			constructorArguments.addIndexedArgumentValue(0, addBasePackages(constructorArguments, packageNames));
 		}
 		else {
+			//如果AutoConfigurationPackages尚未注册,则注册该bean,参数中提供的包名称会被设置到bean定义中
 			GenericBeanDefinition beanDefinition = new GenericBeanDefinition();
 			beanDefinition.setBeanClass(BasePackages.class);
 			beanDefinition.getConstructorArgumentValues().addIndexedArgumentValue(0, packageNames);
 			beanDefinition.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
+			//完成BasePackages的注册
 			registry.registerBeanDefinition(BEAN, beanDefinition);
 		}
 	}
@@ -117,9 +123,14 @@ public abstract class AutoConfigurationPackages {
 	 * configuration.
 	 */
 	static class Registrar implements ImportBeanDefinitionRegistrar, DeterminableImports {
-
+		/**
+		 * 注册AutoConfigurationPackages的BeanDefinition
+		 * @param metadata 注解的信息
+		 * @param registry BeanDefinition 的注册表
+		 */
 		@Override
 		public void registerBeanDefinitions(AnnotationMetadata metadata, BeanDefinitionRegistry registry) {
+			//new PackageImport(metadata).getPackageName()就是根据注解标注元数据信息获取包名
 			register(registry, new PackageImport(metadata).getPackageName());
 		}
 
