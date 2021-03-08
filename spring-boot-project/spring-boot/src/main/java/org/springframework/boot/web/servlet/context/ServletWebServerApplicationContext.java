@@ -217,6 +217,12 @@ public class ServletWebServerApplicationContext extends GenericWebApplicationCon
 	 * @see #prepareWebApplicationContext(ServletContext)
 	 */
 	private org.springframework.boot.web.servlet.ServletContextInitializer getSelfInitializer() {
+		// 这里返回的是一个方法？
+		// 因为这个方法的生命的返回类型是ServletContextInitializer
+		// 所以返回的必须是这个类型的对象
+		// 也就是说，返回了实现了ServletContextInitializer接口的一个类型的对象
+		// 具体就是使用selfInitialize这个方法来实现ServletContextInitializer接口的onStartup方法
+
 		return this::selfInitialize;
 	}
 

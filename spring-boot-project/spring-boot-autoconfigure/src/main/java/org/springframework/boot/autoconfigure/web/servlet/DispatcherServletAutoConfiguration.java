@@ -63,10 +63,17 @@ import org.springframework.web.servlet.DispatcherServlet;
  * @author Brian Clozel
  * @since 2.0.0
  */
+//以@AutoConfigureXXX开头的注解就是配置的加载顺序
+//配置的加载顺序
 @AutoConfigureOrder(Ordered.HIGHEST_PRECEDENCE)
+//标注为配置类
 @Configuration(proxyBeanMethods = false)
+//条件注解当前必须是Servlet项目
 @ConditionalOnWebApplication(type = Type.SERVLET)
+//类路径下必须存在DispatcherServlet
 @ConditionalOnClass(DispatcherServlet.class)
+//配置的加载顺序@AutoConfigureAfter就是在ServletWebServerFactoryAutoConfiguration加载之前进行加载
+//ServletWebServerFactoryAutoConfiguration就是关于tomcat的配置加载类
 @AutoConfigureAfter(ServletWebServerFactoryAutoConfiguration.class)
 public class DispatcherServletAutoConfiguration {
 
@@ -85,7 +92,12 @@ public class DispatcherServletAutoConfiguration {
 	@ConditionalOnClass(ServletRegistration.class)
 	@EnableConfigurationProperties({ HttpProperties.class, WebMvcProperties.class })
 	protected static class DispatcherServletConfiguration {
-
+		/**
+		 * 这个方法就会将dispatcherServlet添加到IOC容器中
+		 * @param httpProperties
+		 * @param webMvcProperties
+		 * @return
+		 */
 		@Bean(name = DEFAULT_DISPATCHER_SERVLET_BEAN_NAME)
 		public DispatcherServlet dispatcherServlet(HttpProperties httpProperties, WebMvcProperties webMvcProperties) {
 			DispatcherServlet dispatcherServlet = new DispatcherServlet();
@@ -102,6 +114,7 @@ public class DispatcherServletAutoConfiguration {
 		@ConditionalOnMissingBean(name = DispatcherServlet.MULTIPART_RESOLVER_BEAN_NAME)
 		public MultipartResolver multipartResolver(MultipartResolver resolver) {
 			// Detect if the user has created a MultipartResolver but named it incorrectly
+			//检测用户是否创建了MultipartResolver，但命名不正确
 			return resolver;
 		}
 
